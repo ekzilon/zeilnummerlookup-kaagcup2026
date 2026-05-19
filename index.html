@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Zeilnummer Lookup</title>
 </head>
+
 <body style="font-family: Arial; padding: 20px;">
 
 <h2>Zeilnummer zoeken</h2>
@@ -13,9 +14,9 @@
   type="text"
   placeholder="Voer zeilnummer in"
   style="
-    padding:10px;
-    font-size:18px;
-    width:300px;
+    padding: 10px;
+    font-size: 18px;
+    width: 300px;
   "
 >
 
@@ -23,9 +24,10 @@
   Zoeken
 </button>
 
-<div id="results" style="margin-top:20px;"></div>
+<div id="results" style="margin-top: 20px;"></div>
 
 <script>
+
 async function searchNumber() {
 
   const number =
@@ -39,7 +41,7 @@ async function searchNumber() {
   try {
 
     const response = await fetch(
-      "https://ekzilon.github.io/zeilnummerlookup-kaagcup2026/lookup.json"
+      "https://ekzilon.github.io/zeilnummerlookup-kaagcup2026/lookup_with_links.json"
     );
 
     const data = await response.json();
@@ -54,10 +56,31 @@ async function searchNumber() {
       return;
     }
 
-    let html = "<h3>Gevonden foto's:</h3>";
+    let html =
+      `<h3>${matches.length} foto's gevonden:</h3>`;
 
-    matches.forEach(file => {
-      html += `<div>${file}</div>`;
+    matches.forEach(photo => {
+
+      html += `
+        <div style="
+          margin-bottom: 10px;
+          padding: 10px;
+          border-bottom: 1px solid #ccc;
+        ">
+
+          <strong>${photo.filename}</strong>
+
+          <br>
+
+          <a
+            href="${photo.url}"
+            target="_blank"
+          >
+            Open Flickr foto
+          </a>
+
+        </div>
+      `;
     });
 
     resultsDiv.innerHTML = html;
@@ -70,6 +93,7 @@ async function searchNumber() {
     console.error(error);
   }
 }
+
 </script>
 
 </body>
