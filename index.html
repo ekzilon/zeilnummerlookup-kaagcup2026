@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Zeilnummer Lookup</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+
+<h2>Zeilnummer zoeken</h2>
+
+<input
+  id="search"
+  type="text"
+  placeholder="Voer zeilnummer in"
+  style="
+    padding:10px;
+    font-size:18px;
+    width:300px;
+  "
+>
+
+<button onclick="searchNumber()">
+  Zoeken
+</button>
+
+<div id="results" style="margin-top:20px;"></div>
+
+<script>
+async function searchNumber() {
+
+  const number =
+    document.getElementById("search").value.trim();
+
+  const resultsDiv =
+    document.getElementById("results");
+
+  resultsDiv.innerHTML = "Zoeken...";
+
+  try {
+
+    const response = await fetch(
+      "https://ekzilon.github.io/zeilnummerlookup-kaagcup2026/lookup.json"
+    );
+
+    const data = await response.json();
+
+    const matches = data[number];
+
+    if (!matches || matches.length === 0) {
+
+      resultsDiv.innerHTML =
+        "Geen foto's gevonden.";
+
+      return;
+    }
+
+    let html = "<h3>Gevonden foto's:</h3>";
+
+    matches.forEach(file => {
+      html += `<div>${file}</div>`;
+    });
+
+    resultsDiv.innerHTML = html;
+
+  } catch (error) {
+
+    resultsDiv.innerHTML =
+      "Fout bij laden database.";
+
+    console.error(error);
+  }
+}
+</script>
+
+</body>
+</html>
