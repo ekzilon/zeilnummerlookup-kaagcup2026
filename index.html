@@ -126,7 +126,12 @@ async function searchNumber() {
             border-radius:10px;
           ">
 
-            <h2>${searchNumber}</h2>
+           <h2>
+            ${searchNumber}
+            (${matches.length} ${
+              matches.length === 1 ? "foto" : "foto's"
+           })
+          </h2>
 
             <div>
               Geen foto's gevonden.
