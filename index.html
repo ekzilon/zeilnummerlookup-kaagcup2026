@@ -39,14 +39,84 @@ async function searchNumber() {
   resultsDiv.innerHTML = "Zoeken...";
 
   try {
-
+    
     const response = await fetch(
       "https://ekzilon.github.io/zeilnummerlookup-kaagcup2026/lookup_with_links.json"
     );
 
     const data = await response.json();
 
-    const matches = data[number];
+    const numbers = number
+  .split(/[, ]+/)
+  .filter(n => n.trim() !== "");
+
+let html = "";
+
+let totalFound = 0;
+
+numbers.forEach(searchNumber => {
+
+  const matches = data[searchNumber];
+
+  if (!matches || matches.length === 0) {
+
+    html += `
+      <div style="margin-bottom:20px;">
+        <h3>${searchNumber}</h3>
+        Geen foto's gevonden.
+      </div>
+    `;
+
+    return;
+  }
+
+  totalFound += matches.length;
+
+  html += `
+    <div style="margin-bottom:30px;">
+      <h3>
+        ${searchNumber}
+        (${matches.length} foto's)
+      </h3>
+  `;
+
+  matches.forEach(photo => {
+
+    html += `
+      <div style="
+        margin-bottom:10px;
+        padding:10px;
+        border-bottom:1px solid #ccc;
+      ">
+
+        <strong>${photo.filename}</strong>
+
+        <br>
+
+        <a
+          href="${photo.url}"
+          target="_blank"
+        >
+          Bekijk foto
+        </a>
+
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+});
+
+if (totalFound === 0) {
+
+  html = "Geen foto's gevonden.";
+}
+
+resultsDiv.innerHTML = html;
+
+resultsDiv.scrollIntoView({
+  behavior: "smooth"
+});
 
     if (!matches || matches.length === 0) {
 
