@@ -1,32 +1,81 @@
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Zeilnummer Lookup</title>
 </head>
 
-<body style="font-family: Arial; padding: 20px;">
+<body style="
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+">
 
-<h2>Zeilnummer zoeken</h2>
+  <h1 style="
+    font-size: 32px;
+    margin-bottom: 10px;
+  ">
+    Zeilfoto's zoeken
+  </h1>
 
-<input
-  id="search"
-  type="text"
-  placeholder="Voer zeilnummer in"
-  style="
-    padding: 10px;
-    font-size: 18px;
-    width: 300px;
-  "
->
+  <p style="
+    color: #555;
+    margin-bottom: 25px;
+  ">
+    Voer één of meerdere zeilnummers in.
+  </p>
 
-<button onclick="searchNumber()">
-  Zoeken
-</button>
+  <input
+    id="search"
+    type="text"
+    inputmode="numeric"
+    placeholder="Bijv. 1427 1688 1766"
+    style="
+      padding: 16px;
+      font-size: 20px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+    "
+  >
 
-<div id="results" style="margin-top: 20px;"></div>
+  <button
+    onclick="searchNumber()"
+    style="
+      padding: 16px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+    "
+  >
+    Foto's zoeken
+  </button>
+
+  <div
+    id="results"
+    style="
+      margin-top: 30px;
+    "
+  ></div>
 
 <script>
+
+document
+  .getElementById("search")
+  .addEventListener("keypress", function(event) {
+
+    if (event.key === "Enter") {
+      searchNumber();
+    }
+});
 
 async function searchNumber() {
 
@@ -36,10 +85,19 @@ async function searchNumber() {
   const resultsDiv =
     document.getElementById("results");
 
-  resultsDiv.innerHTML = "Zoeken...";
+  if (!number) {
+
+    resultsDiv.innerHTML =
+      "Voer eerst een zeilnummer in.";
+
+    return;
+  }
+
+  resultsDiv.innerHTML =
+    "Foto's worden gezocht...";
 
   try {
-    
+
     const response = await fetch(
       "https://ekzilon.github.io/zeilnummerlookup-kaagcup2026/lookup_with_links.json"
     );
@@ -47,118 +105,102 @@ async function searchNumber() {
     const data = await response.json();
 
     const numbers = number
-  .split(/[, ]+/)
-  .filter(n => n.trim() !== "");
+      .split(/[, ]+/)
+      .filter(n => n.trim() !== "");
 
-let html = "";
+    let html = "";
 
-let totalFound = 0;
+    let totalFound = 0;
 
-numbers.forEach(searchNumber => {
+    numbers.forEach(searchNumber => {
 
-  const matches = data[searchNumber];
+      const matches = data[searchNumber];
 
-  if (!matches || matches.length === 0) {
+      if (!matches || matches.length === 0) {
 
-    html += `
-      <div style="margin-bottom:20px;">
-        <h3>${searchNumber}</h3>
-        Geen foto's gevonden.
-      </div>
-    `;
+        html += `
+          <div style="
+            margin-bottom:30px;
+            padding:15px;
+            border:1px solid #ddd;
+            border-radius:10px;
+          ">
 
-    return;
-  }
+            <h2>${searchNumber}</h2>
 
-  totalFound += matches.length;
+            <div>
+              Geen foto's gevonden.
+            </div>
 
-  html += `
-    <div style="margin-bottom:30px;">
-      <h3>
-        ${searchNumber}
-        (${matches.length} foto's)
-      </h3>
-  `;
+          </div>
+        `;
 
-  matches.forEach(photo => {
+        return;
+      }
 
-    html += `
-      <div style="
-        margin-bottom:10px;
-        padding:10px;
-        border-bottom:1px solid #ccc;
-      ">
-
-        <strong>${photo.filename}</strong>
-
-        <br>
-
-        <a
-          href="${photo.url}"
-          target="_blank"
-        >
-          Bekijk foto
-        </a>
-
-      </div>
-    `;
-  });
-
-  html += `</div>`;
-});
-
-if (totalFound === 0) {
-
-  html = "Geen foto's gevonden.";
-}
-
-resultsDiv.innerHTML = html;
-
-resultsDiv.scrollIntoView({
-  behavior: "smooth"
-});
-
-    if (!matches || matches.length === 0) {
-
-      resultsDiv.innerHTML =
-        "Geen foto's gevonden.";
-
-      return;
-    }
-
-    let html =
-      `<h3>${matches.length} foto's gevonden:</h3>`;
-
-    matches.forEach(photo => {
+      totalFound += matches.length;
 
       html += `
         <div style="
-          margin-bottom: 10px;
-          padding: 10px;
-          border-bottom: 1px solid #ccc;
+          margin-bottom:30px;
         ">
 
-          <strong>${photo.filename}</strong>
-
-          <br>
-
-          <a
-            href="${photo.url}"
-            target="_blank"
-          >
-            Open foto
-          </a>
-
-        </div>
+          <h2>
+            ${searchNumber}
+            (${matches.length} foto's)
+          </h2>
       `;
+
+      matches.forEach(photo => {
+
+        html += `
+          <div style="
+            margin-bottom:15px;
+            padding:15px;
+            border:1px solid #ddd;
+            border-radius:10px;
+          ">
+
+            <div style="
+              font-weight:bold;
+              margin-bottom:8px;
+            ">
+              ${photo.filename}
+            </div>
+
+            <a
+              href="${photo.url}"
+              target="_blank"
+              style="
+                font-size:18px;
+              "
+            >
+              Bekijk foto
+            </a>
+
+          </div>
+        `;
+      });
+
+      html += `</div>`;
     });
 
-    resultsDiv.innerHTML = html;  resultsDiv.scrollIntoView({   behavior: "smooth" });
+    if (totalFound === 0) {
+
+      html =
+        "Geen foto's gevonden.";
+    }
+
+    resultsDiv.innerHTML = html;
+
+    resultsDiv.scrollIntoView({
+      behavior: "smooth"
+    });
 
   } catch (error) {
 
     resultsDiv.innerHTML =
-      "Fout bij laden database.";
+      "Fout bij laden van database.";
 
     console.error(error);
   }
