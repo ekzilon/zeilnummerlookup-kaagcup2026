@@ -32,7 +32,9 @@
   <input
     id="search"
     type="text"
-    inputmode="numeric"
+    autocomplete="off"
+    autocorrect="off"
+    spellcheck="false"
     placeholder="Bijv. 1427 1688 1766"
     style="
       padding: 16px;
@@ -126,12 +128,9 @@ async function searchNumber() {
             border-radius:10px;
           ">
 
-           <h2>
-            ${searchNumber}
-            (${matches.length} ${
-              matches.length === 1 ? "foto" : "foto's"
-           })
-          </h2>
+            <h2>
+              ${searchNumber}
+            </h2>
 
             <div>
               Geen foto's gevonden.
@@ -152,7 +151,9 @@ async function searchNumber() {
 
           <h2>
             ${searchNumber}
-            (${matches.length} foto's)
+            (${matches.length} ${
+              matches.length === 1 ? "foto" : "foto's"
+            })
           </h2>
       `;
 
